@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>營養偵探：能量平衡大作戰</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+
+:root{--teal:#0F766E;--teal-l:#F0FDFA;--orange:#C2410C;--orange-l:#FFF7ED;--ink:#1F2937;--grey:#4B5563;--line:#D1D5DB}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Noto Sans TC',system-ui,sans-serif;color:var(--ink);background:#F8FAFC;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:16px 16px 60px;display:flex;flex-direction:column;gap:22px}
+header{background:var(--teal);color:#fff;border-radius:20px;padding:22px 24px;display:flex;flex-direction:column;gap:10px}
+header .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:14px;font-weight:500}
+header h1{margin:0;font-size:clamp(30px,7vw,48px);font-weight:900;letter-spacing:2px;line-height:1.15}
+header .sub{font-size:18px;font-weight:500}
+.idrow{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-top:6px}
+.idrow input{font-family:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:0;width:100%}
+.tasks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tasks a{display:flex;flex-direction:column;background:#fff;border:2px solid var(--teal);border-radius:12px;padding:8px 10px;text-decoration:none;color:var(--ink)}
+.tasks a span:first-child{font-size:12px;font-weight:700;color:var(--teal)}
+.tasks a span:last-child{font-size:15px;font-weight:700}
+.tasks a.hot{background:var(--orange);border-color:var(--orange);color:#fff}
+.tasks a.hot span:first-child{color:#fff}
+section{background:#fff;border:2px solid var(--ink);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;scroll-margin-top:12px}
+h2{margin:0;font-size:26px;font-weight:900;color:var(--teal)}
+h3{margin:0;font-size:19px;font-weight:900}
+.lead{margin:0;font-size:16px}
+.hint{font-size:14px;color:var(--grey)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px;font-weight:700}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tablebox{overflow-x:auto;border:2px solid var(--ink);border-radius:12px}
+select,input[type=text],input[type=number],textarea{font-family:inherit;font-size:16px;padding:8px 10px;border:2px solid #6B7280;border-radius:8px;background:#fff;color:var(--ink)}
+input.num{width:96px}
+textarea{width:100%;min-height:64px;resize:vertical}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills label{position:relative;cursor:pointer}
+.pills input{position:absolute;opacity:0}
+.pills span{display:inline-block;border:2px solid #9CA3AF;border-radius:99px;padding:5px 12px;font-size:15px;background:#fff;min-height:36px}
+.pills input:checked+span{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700}
+.pills input:focus-visible+span{outline:3px solid #FDBA74}
+.ok{outline:3px solid var(--teal)!important;outline-offset:2px}
+.no{outline:3px solid var(--orange)!important;outline-offset:2px}
+.mark{display:inline-block;font-weight:900;margin-left:6px}
+.mark.y{color:var(--teal)}.mark.n{color:var(--orange)}
+.icon{width:48px;height:48px}
+.ref{border-color:var(--teal);background:var(--teal-l)}
+details summary{cursor:pointer;font-size:22px;font-weight:900;color:var(--teal);list-style:none}
+details summary::before{content:'＋ '}
+details[open] summary::before{content:'－ '}
+.bmibar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:2px solid var(--ink);border-radius:10px;overflow:hidden;text-align:center}
+.bmibar div{padding:8px 4px;display:flex;flex-direction:column}
+.bmibar b{font-size:19px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.box{background:#fff;border:2px solid var(--ink);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.formula{background:#fff;border:2px dashed var(--teal);border-radius:10px;padding:6px 12px;font-weight:700;text-align:center}
+.light{display:flex;align-items:center;gap:10px;border-radius:8px;padding:6px 10px}
+.dot{width:16px;height:16px;border-radius:99px;flex-shrink:0}
+.case{border:2px solid var(--ink);border-radius:14px;overflow:hidden}
+.case .bar{background:var(--ink);color:#fff;padding:8px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tag{background:var(--orange);border-radius:6px;padding:1px 8px;font-size:13px;font-weight:700}
+.case .body{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.data{display:flex;flex-wrap:wrap;gap:6px}
+.data span{background:#F3F4F6;border-radius:6px;padding:3px 9px;font-size:15px}
+.line{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:16px}
+.think{background:var(--orange-l);border:2px solid var(--orange);border-radius:14px;padding:14px}
+.fitgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fit{border:2px solid var(--ink);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:900;font-size:18px}
+.defs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:15px}
+.defs div{background:var(--teal-l);border-radius:10px;padding:8px 12px}
+.acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.acts label{border:2px solid var(--ink);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:4px;font-size:15px;font-weight:700}
+.tf{display:flex;flex-direction:column}
+.tf div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:16px}
+.dse-head{background:var(--orange);color:#fff;border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dse-head h2{color:#fff}
+.dse-head .badge{background:#fff;color:var(--orange);border-radius:10px;padding:6px 10px;font-size:14px;font-weight:700}
+.labels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.label{border:2px solid var(--ink);border-radius:10px;overflow:hidden;font-size:15px}
+.label h4{margin:0;background:var(--ink);color:#fff;text-align:center;padding:6px;font-size:17px}
+.label .per{background:#FEF3C7;text-align:right;padding:4px 10px;font-weight:700;border-bottom:2px solid var(--ink)}
+.label .r{display:flex;justify-content:space-between;padding:4px 10px;border-bottom:1px solid var(--line)}
+.label .r.in{padding-left:26px}
+.q{display:flex;flex-direction:column;gap:6px}
+.q .qh{display:flex;justify-content:space-between;gap:10px;font-weight:700;font-size:16px}
+.tip{background:var(--teal-l);border:2px solid var(--teal);border-radius:12px;padding:12px 16px;font-size:15px}
+.check{align-self:flex-start;background:var(--orange);color:#fff;border:0;border-radius:12px;padding:12px 24px;font-size:17px;font-weight:700;cursor:pointer;min-height:48px;font-family:inherit}
+.check:hover{background:#9A3412}
+.result{display:none;border-radius:12px;padding:12px 16px;font-size:16px}
+.result.show{display:block;background:var(--teal-l);border:2px solid var(--teal)}
+.result b{font-size:18px}
+.model{display:none;background:#F3F4F6;border-radius:10px;padding:10px 14px;font-size:15px}
+.model.show{display:block}
+.total{position:sticky;bottom:12px;align-self:center;background:var(--ink);color:#fff;border-radius:99px;padding:10px 22px;font-weight:700;font-size:16px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+footer{font-size:13px;color:var(--grey);text-align:center}
+@media (max-width:640px){
+  .idrow,.tasks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .idrow input:first-child{grid-column:span 2}
+  .grid2,.defs,.labels{grid-template-columns:1fr}
+  .fitgrid,.acts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bmibar b{font-size:16px}
+}
+
+.ncards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.ncard{border:2px solid var(--ink);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.ncard b{font-size:17px}
+.ncard .t{font-size:12px;font-weight:700;border-radius:99px;padding:1px 8px}
+.macro{background:#CCFBF1;color:#115E59}.micro{background:#FFEDD5;color:#9A3412}
+.stmt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:16px;flex-wrap:wrap}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:16px}
+.chain .node{background:#F3F4F6;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;font-weight:700}
+.chain .arr{font-size:22px;font-weight:900;color:var(--orange)}
+.trucks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.truck{border:2px solid var(--ink);border-radius:14px;padding:12px;display:flex;gap:12px;align-items:center}
+.sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.menu label{display:flex;justify-content:space-between;align-items:center;gap:8px;border:2px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;cursor:pointer;font-size:15px}
+.menu label:has(input:checked){border-color:var(--teal);background:var(--teal-l);font-weight:700}
+.menu input{width:20px;height:20px;accent-color:#0F766E}
+.meal{font-size:13px;font-weight:700;color:var(--grey);margin:8px 0 4px}
+.scalebox{background:#F8FAFC;border:2px solid var(--ink);border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px}
+#beam{transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-origin:160px 60px}
+.verdict{font-size:20px;font-weight:900;text-align:center;border-radius:10px;padding:8px 12px;width:100%}
+.nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;text-align:center}
+.nums div{background:#fff;border:2px solid var(--line);border-radius:10px;padding:6px}
+.nums b{display:block;font-size:24px}
+.who{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.inten{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.inten label{border:2px solid var(--ink);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:4px;font-size:15px;font-weight:700}
+.build{background:#F8FAFC;border:2px solid var(--ink);border-radius:12px;padding:14px;font-size:16px;line-height:2.3}
+@media (max-width:640px){
+  .ncards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sim,.trucks{grid-template-columns:1fr}
+  .inten{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="top"><span>HMSC 主題冊 (3) 健康體魄</span><span>3.2 從不同層面保持身體健康 · 個人層面</span></div>
+  <h1>營養偵探：能量平衡大作戰</h1>
+  <div class="sub">吃進去的，和用出去的，誰比較多？</div>
+  <div class="idrow">
+    <input type="text" aria-label="偵探姓名" placeholder="偵探姓名">
+    <input type="text" aria-label="班別" placeholder="班別">
+    <input type="text" aria-label="學號" placeholder="學號">
+  </div>
+</header>
+
+<nav class="tasks" aria-label="任務">
+  <a href="#t1"><span>任務一</span><span>營養素檔案</span></a>
+  <a href="#t2"><span>任務二</span><span>營養與健康</span></a>
+  <a href="#t3"><span>任務三</span><span>能量平衡天秤</span></a>
+  <a href="#dse" class="hot"><span>終極關卡</span><span>DSE 挑戰站</span></a>
+</nav>
+
+<!-- 任務一 -->
+<section id="t1">
+  <h2>任務一　營養素檔案</h2>
+  <p class="lead">營養素分兩大類：<b>主要營養素</b>（每天需要大量攝取，提供能量、建構身體）和<b>微量營養素</b>（需要量少，調節細胞功能）。</p>
+  <div class="ncards">
+    <div class="ncard"><svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#1F2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 30 C10 20 18 12 28 12 C36 12 40 18 40 24 C40 32 32 38 22 38 L12 38 Z"/><circle cx="31" cy="21" r="3"/></svg><b>蛋白質</b><span class="t macro">主要營養素</span><span class="hint">肉、魚、蛋、豆</span></div>
+    <div class="ncard"><svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#1F2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24 L40 24 C40 34 33 40 24 40 C15 40 8 34 8 24 Z"/><path d="M14 24 C14 16 20 12 24 16 C28 10 36 14 34 24"/></svg><b>碳水化合物</b><span class="t macro">主要營養素</span><span class="hint">飯、麵、麵包</span></div>
+    <div class="ncard"><svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#1F2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6 C30 16 36 22 36 30 C36 37 30 42 24 42 C18 42 12 37 12 30 C12 22 18 16 24 6 Z"/></svg><b>脂肪</b><span class="t macro">主要營養素</span><span class="hint">油、牛油、果仁</span></div>
+    <div class="ncard"><svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#1F2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="27" r="14"/><path d="M24 13 C24 8 28 6 32 6"/></svg><b>維生素</b><span class="t micro">微量營養素</span><span class="hint">蔬菜、水果</span></div>
+    <div class="ncard"><svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#1F2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8 L32 8 L32 18 C32 30 38 34 38 40 L10 40 C10 34 16 30 16 18 Z"/><line x1="12" y1="32" x2="36" y2="32"/></svg><b>礦物質</b><span class="t micro">微量營養素</span><span class="hint">奶（鈣）、肉（鐵）</span></div>
+  </div>
+  <h3>以下描述屬於哪一種營養素？</h3>
+  <div id="t1list"></div>
+  <button class="check" data-check="t1">檢查答案</button>
+  <div class="result" id="r-t1"></div>
+</section>
+
+<!-- 任務二 -->
+<section id="t2">
+  <h2>任務二　營養素與健康的關係</h2>
+  <h3>A. 膽固醇的兩部車</h3>
+  <p class="lead">膽固醇要依附脂蛋白，才能在血液中運送。把正確的名稱配上每部車。</p>
+  <div class="trucks">
+    <div class="truck"><svg width="72" height="48" viewBox="0 0 72 48" aria-hidden="true" fill="none" stroke="#C2410C" stroke-width="3" stroke-linejoin="round"><rect x="4" y="10" width="40" height="24" rx="3"/><path d="M44 18 L58 18 L66 26 L66 34 L44 34 Z"/><circle cx="16" cy="38" r="5" fill="#fff"/><circle cx="54" cy="38" r="5" fill="#fff"/></svg>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:15px"><b>運貨車：把膽固醇積存在血管壁上，加速動脈硬化（「壞」膽固醇）</b><select data-ans="低密度脂蛋白" aria-label="運貨車是"><option value="">這是？</option><option>高密度脂蛋白</option><option>低密度脂蛋白</option></select></div></div>
+    <div class="truck"><svg width="72" height="48" viewBox="0 0 72 48" aria-hidden="true" fill="none" stroke="#0F766E" stroke-width="3" stroke-linejoin="round"><path d="M4 34 L4 14 L40 8 L44 34 Z"/><path d="M44 18 L58 18 L66 26 L66 34 L44 34 Z"/><circle cx="16" cy="38" r="5" fill="#fff"/><circle cx="54" cy="38" r="5" fill="#fff"/></svg>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:15px"><b>垃圾車：把動脈壁的膽固醇清走，帶到肝臟排出體外（「好」膽固醇）</b><select data-ans="高密度脂蛋白" aria-label="垃圾車是"><option value="">這是？</option><option>高密度脂蛋白</option><option>低密度脂蛋白</option></select></div></div>
+  </div>
+
+  <h3>B. 完成因果鏈</h3>
+  <div class="chain">
+    <span class="node">攝取過量飽和脂肪 / 反式脂肪</span><span class="arr">→</span>
+    <span class="node">低密度脂蛋白 <select data-ans="上升" aria-label="低密度脂蛋白變化"><option value="">？</option><option>上升</option><option>下降</option></select></span><span class="arr">＋</span>
+    <span class="node">高密度脂蛋白 <select data-ans="下降" aria-label="高密度脂蛋白變化"><option value="">？</option><option>上升</option><option>下降</option></select></span><span class="arr">→</span>
+    <span class="node">膽固醇積聚在 <select data-ans="血管壁" aria-label="積聚位置"><option value="">？</option><option>血管壁</option><option>骨骼</option><option>皮膚</option></select></span><span class="arr">→</span>
+    <span class="node"><select data-ans="心血管疾病" aria-label="結果"><option value="">結果？</option><option>心血管疾病</option><option>壞血病</option><option>貧血</option></select></span>
+  </div>
+
+  <h3>C. 缺乏會怎樣？</h3>
+  <div id="t2lack"></div>
+
+  <h3>D. 真定假？</h3>
+  <div class="tf" id="t2tf"></div>
+  <button class="check" data-check="t2">檢查答案</button>
+  <div class="result" id="r-t2"></div>
+</section>
+
+<!-- 任務三 -->
+<section id="t3">
+  <h2>任務三　能量平衡天秤</h2>
+  <div class="tip" style="font-size:16px">
+    <b>輸入能量</b>＝從飲食攝取的能量　｜　<b>輸出能量</b>＝身體活動及新陳代謝消耗的能量<br>
+    輸入 ＝ 輸出 → <b>體重保持</b>　｜　輸入 ＞ 輸出 → <b>體重增加</b>　｜　輸入 ＜ 輸出 → <b>體重減輕</b>
+  </div>
+  <h3>試玩：揀選一天的飲食，看看天秤怎樣變</h3>
+  <div class="who">
+    <label for="sex"><b>性別</b></label><select id="sex"><option value="f">女（18–49 歲）</option><option value="m">男（18–49 歲）</option></select>
+    <label for="lvl"><b>體力活動水平</b></label><select id="lvl"><option value="0">輕</option><option value="1">中</option><option value="2">重</option></select>
+  </div>
+  <div class="sim">
+    <div class="menu" id="menu"></div>
+    <div class="scalebox">
+      <svg width="320" height="190" viewBox="0 0 320 190" role="img" aria-label="能量平衡天秤" id="scaleSvg">
+        <path d="M160 60 L160 170 M120 176 L200 176" stroke="#1F2937" stroke-width="6" stroke-linecap="round" fill="none"/>
+        <g id="beam">
+          <line x1="40" y1="60" x2="280" y2="60" stroke="#1F2937" stroke-width="6" stroke-linecap="round"/>
+          <line x1="40" y1="60" x2="20" y2="110" stroke="#4B5563" stroke-width="2"/><line x1="40" y1="60" x2="60" y2="110" stroke="#4B5563" stroke-width="2"/>
+          <line x1="280" y1="60" x2="260" y2="110" stroke="#4B5563" stroke-width="2"/><line x1="280" y1="60" x2="300" y2="110" stroke="#4B5563" stroke-width="2"/>
+          <path d="M10 110 L70 110 Q70 130 40 130 Q10 130 10 110 Z" fill="#FED7AA" stroke="#1F2937" stroke-width="2"/>
+          <path d="M250 110 L310 110 Q310 130 280 130 Q250 130 250 110 Z" fill="#99F6E4" stroke="#1F2937" stroke-width="2"/>
+          <text x="40" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#1F2937">輸入</text>
+          <text x="280" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#1F2937">輸出</text>
+        </g>
+        <circle cx="160" cy="60" r="8" fill="#C2410C"/>
+      </svg>
+      <div class="nums"><div>輸入能量<b id="inK">0</b>千卡</div><div>估計每天所需<b id="outK">2100</b>千卡</div></div>
+      <div class="verdict" id="verdict">揀選食物開始</div>
+    </div>
+  </div>
+  <div class="hint">資料：衞生署 change4health 網站，健康成年人估計每天所需能量；食物能量取自教學簡報例子。</div>
+
+  <h3>個案：小芳（女，25 歲，文員，體力活動水平「輕」）</h3>
+  <p class="lead">小芳一天吃了：咖啡、火腿三文治、咖哩豬扒拉麵、珍珠奶茶、海南雞飯、荔枝玉露。用上面的天秤幫忙計算。</p>
+  <div class="q"><div class="line">(1) 小芳一天的輸入能量 ＝ <input class="num" type="number" data-ans="2485" aria-label="輸入能量"> 千卡</div></div>
+  <div class="q"><div class="line">(2) 她估計每天需要 <input class="num" type="number" data-ans="2100" aria-label="每天所需"> 千卡，即多吃了 <input class="num" type="number" data-ans="385" aria-label="多吃了"> 千卡</div></div>
+  <div class="q"><div class="line">(3) 如果每天都這樣吃，長期下去她的體重會：<span class="pills" data-ans="增加"><label><input type="radio" name="w1" value="增加"><span>增加</span></label><label><input type="radio" name="w1" value="保持"><span>保持</span></label><label><input type="radio" name="w1" value="減輕"><span>減輕</span></label></span></div></div>
+  <div class="q"><div class="line">(4) 把珍珠奶茶換成清水，輸入能量變成 <input class="num" type="number" data-ans="2305" aria-label="換清水後"> 千卡</div></div>
+  <div class="q"><div class="line">(5) 她再把體力活動水平提升至「中」（每天需要 2300 千卡），輸入和輸出便會：<span class="pills" data-ans="大致平衡"><label><input type="radio" name="w2" value="大致平衡"><span>大致平衡</span></label><label><input type="radio" name="w2" value="相差很遠"><span>相差很遠</span></label></span></div></div>
+
+  <h3>體力活動有多劇烈？</h3>
+  <div class="inten" id="inten"></div>
+  <div class="tip">世界衞生組織建議：成年人每星期最少做 <b>150–300 分鐘中等強度</b>，或 <b>75–150 分鐘劇烈強度</b>的帶氧體能活動。<br>說話測試：中等強度＝能如常說話但唱不到歌；劇烈強度＝呼吸急促得不能如常說話。</div>
+  <button class="check" data-check="t3">檢查答案</button>
+  <div class="result" id="r-t3"></div>
+</section>
+
+<!-- DSE -->
+<section id="dse">
+  <div class="dse-head"><div><div style="font-size:13px;font-weight:700">終極關卡</div><h2>DSE 挑戰站</h2></div><div class="badge">課程「評估例子」題型</div></div>
+  <div class="q"><div class="qh"><span>(a)　運用能量平衡概念，解釋為甚麼不健康的生活方式可能導致中年肥胖。</span></div>
+    <div class="hint">選出正確字詞，砌出一個完整答案。</div>
+    <div class="build">
+      能量平衡是指 <select data-ans="輸入能量和輸出能量" aria-label="空格1"><option value="">？</option><option>輸入能量和輸出能量</option><option>蛋白質和脂肪</option><option>身高和體重</option></select> 保持相同，體重便會保持。<br>
+      不健康的飲食習慣，例如經常進食 <select data-ans="高熱量快餐食物" aria-label="空格2"><option value="">？</option><option>新鮮蔬菜</option><option>高熱量快餐食物</option><option>清水</option></select>，令輸入能量 <select data-ans="增加" aria-label="空格3"><option value="">？</option><option>增加</option><option>減少</option></select>；<br>
+      缺乏運動，例如 <select data-ans="久坐不動的工作及休閒活動" aria-label="空格4"><option value="">？</option><option>每天緩步跑</option><option>久坐不動的工作及休閒活動</option><option>行樓梯</option></select>，令輸出能量 <select data-ans="減少" aria-label="空格5"><option value="">？</option><option>增加</option><option>減少</option></select>。<br>
+      當輸入能量長期 <select data-ans="高於" aria-label="空格6"><option value="">？</option><option>高於</option><option>低於</option></select> 輸出能量，過剩的能量會以 <select data-ans="脂肪" aria-label="空格7"><option value="">？</option><option>脂肪</option><option>維生素</option><option>礦物質</option></select> 形式積存，體重增加，最終導致肥胖。
+    </div></div>
+
+  <div class="q"><div class="qh"><span>(b)　列出兩種正面影響，以說明運動如何在不同方面為健康帶來好處。</span></div>
+    <div class="line">生理方面：<select data-ans="消耗熱量，減少體內脂肪" aria-label="生理好處"><option value="">？</option><option>消耗熱量，減少體內脂肪</option><option>分泌腦內啡，舒緩壓力</option><option>認識更多朋友</option></select></div>
+    <div class="line">心理方面：<select data-ans="分泌腦內啡，幫助放鬆及舒緩壓力" aria-label="心理好處"><option value="">？</option><option>改善心血管狀況</option><option>分泌腦內啡，幫助放鬆及舒緩壓力</option><option>減少罹患骨質疏鬆症的機會</option></select></div>
+    <div class="hint">其他生理好處：增強身體機能；改善心血管狀況，防止高血壓；減少罹患糖尿病、骨質疏鬆症和癌症的機會。</div></div>
+
+  <div class="q"><div class="qh"><span>(c)　2025 DSE 卷一第 11(b) 題：指出主要影響血糖值的宏量營養素。</span><span>(1 分)</span></div>
+    <span class="pills" data-ans="碳水化合物"><label><input type="radio" name="dc" value="蛋白質"><span>蛋白質</span></label><label><input type="radio" name="dc" value="碳水化合物"><span>碳水化合物</span></label><label><input type="radio" name="dc" value="脂肪"><span>脂肪</span></label><label><input type="radio" name="dc" value="維生素"><span>維生素</span></label></span></div>
+
+  <div class="tip"><b style="color:var(--teal)">DSE 拿分秘訣</b><br>「運用……概念解釋」的題目：先寫出<b>概念的定義</b>，再把<b>情境</b>（飲食、運動）連繫到<b>輸入 / 輸出</b>的變化，最後寫出<b>結果</b>。</div>
+  <button class="check" data-check="dse">檢查答案</button>
+  <div class="result" id="r-dse"></div>
+</section>
+
+<div class="total" id="total" aria-live="polite">總分：未檢查</div>
+<footer>參考：EDB《健康管理與社會關懷》主題冊 (3) 第 17–23 頁及教學簡報 · 個案為虛構練習</footer>
+</div>
+
+<script>
+const pills=(name,opts,ans)=>`<span class="pills" data-ans="${ans}">${opts.map(o=>`<label><input type="radio" name="${name}" value="${o}"><span>${o}</span></label>`).join('')}</span>`;
+const NUT=['蛋白質','碳水化合物','脂肪','維生素','礦物質'];
+const sel=(ans,opts,lab)=>`<select data-ans="${ans}" aria-label="${lab}"><option value="">請選擇</option>${opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
+const T1=[
+ ['促進人體生長發育，修補身體組織','蛋白質'],
+ ['日常飲食中熱量的主要來源','碳水化合物'],
+ ['防止人體在嚴寒環境下損失熱量，保護內臟免受震盪','脂肪'],
+ ['膳食纖維屬於這一類，水溶性纖維有助降低血糖','碳水化合物'],
+ ['分為脂溶性（A、D、E、K）和水溶性（B 雜、C）','維生素'],
+ ['鐵能製造紅血球；鈣能幫助骨骼和牙齒','礦物質'],
+ ['當熱量攝取不足時，會被分解以釋放能量','蛋白質']
+];
+document.getElementById('t1list').innerHTML=T1.map((t,i)=>`<div class="stmt"><span>${i+1}.　${t[0]}</span>${sel(t[1],NUT,'第'+(i+1)+'題')}</div>`).join('');
+const LACK=[['缺乏維生素 C','壞血病'],['缺乏維生素 B12','貧血'],['缺乏維生素 D 和鈣（長者）','骨質疏鬆、容易骨折']];
+const LOPT=['壞血病','貧血','骨質疏鬆、容易骨折'];
+document.getElementById('t2lack').innerHTML=LACK.map((t,i)=>`<div class="stmt"><span>${t[0]} →</span>${sel(t[1],LOPT,t[0])}</div>`).join('');
+const TF=[['脂溶性維生素攝取過量，會積存在肝臟，有中毒危險。','✓'],['水溶性維生素會經腎臟排出，所以吃多少都沒有問題。','✗'],['反式脂肪常見於煎炸食品和市售包裝食品。','✓'],['每天來自脂肪的能量應少於 30%，鹽應少於 5 克。','✓'],['高密度脂蛋白俗稱「壞」膽固醇。','✗']];
+document.getElementById('t2tf').innerHTML=TF.map((t,i)=>`<div><span>${i+1}.　${t[0]}</span>${pills('tf'+i,['✓','✗'],t[1])}</div>`).join('');
+
+const FOODS=[['早餐','咖啡',63],['早餐','火腿三文治',605],['午餐','咖哩豬扒拉麵',657],['午餐','珍珠奶茶',180],['晚餐','海南雞飯',800],['晚餐','荔枝玉露',180],['任何時候','清水',0]];
+let html='',last='';
+FOODS.forEach((f,i)=>{if(f[0]!==last){html+=`<div class="meal">${f[0]}</div>`;last=f[0]}html+=`<label><span><input type="checkbox" data-k="${f[2]}"> ${f[1]}</span><span>${f[2]} 千卡</span></label>`});
+document.getElementById('menu').innerHTML=html;
+const NEED={f:[2100,2300,2700],m:[2400,2700,3200]};
+function sim(){
+  const inK=[...document.querySelectorAll('#menu input:checked')].reduce((a,c)=>a+ +c.dataset.k,0);
+  const need=NEED[document.getElementById('sex').value][+document.getElementById('lvl').value];
+  document.getElementById('inK').textContent=inK;document.getElementById('outK').textContent=need;
+  const d=inK-need, ang=Math.max(-16,Math.min(16,-d/25));
+  document.getElementById('beam').style.transform=`rotate(${ang}deg)`;
+  const v=document.getElementById('verdict');
+  if(inK===0){v.textContent='揀選食物開始';v.style.background='#F3F4F6';return}
+  if(Math.abs(d)<=100){v.textContent='大致平衡 → 體重保持';v.style.background='#CCFBF1'}
+  else if(d>0){v.textContent=`多了 ${d} 千卡 → 體重增加`;v.style.background='#FFEDD5'}
+  else{v.textContent=`少了 ${-d} 千卡 → 體重減輕`;v.style.background='#DBEAFE'}
+}
+document.querySelectorAll('#menu input,#sex,#lvl').forEach(e=>e.addEventListener('change',sim));sim();
+
+const INT=[['緩步跑','劇烈'],['快步行','中等'],['散步','低等'],['抹地','中等'],['洗碗碟','低等'],['跳繩','劇烈'],['行樓梯','中等'],['打籃球','劇烈']];
+document.getElementById('inten').innerHTML=INT.map(a=>`<label>${a[0]}${sel(a[1],['低等','中等','劇烈'],a[0]+' 強度')}</label>`).join('');
+
+const scores={};
+function markEl(el,ok){el.classList.remove('ok','no');el.classList.add(ok?'ok':'no')}
+function grade(sec){
+  let g=0,m=0;
+  sec.querySelectorAll('select[data-ans]').forEach(s=>{m++;const ok=s.value===s.dataset.ans;if(ok)g++;markEl(s,ok)});
+  sec.querySelectorAll('input.num[data-ans]').forEach(n=>{m++;const ok=n.value!==''&&Math.abs(+n.value-+n.dataset.ans)<=0.5;if(ok)g++;markEl(n,ok)});
+  sec.querySelectorAll('.pills[data-ans]').forEach(p=>{m++;const c=p.querySelector('input:checked');const ok=!!c&&c.value===p.dataset.ans;if(ok)g++;markEl(p,ok)});
+  return [g,m];
+}
+const MSG={
+ t1:'記住：蛋白質＝建構和修補；碳水化合物＝主要能量來源；脂肪＝保暖和保護；維生素和礦物質＝調節身體功能。',
+ t2:'低密度脂蛋白是「運貨車」（壞），高密度脂蛋白是「垃圾車」（好）。',
+ t3:'小芳：63＋605＋657＋180＋800＋180＝2485 千卡；2485－2100＝385 千卡。減少輸入（換清水）加上增加輸出（多做活動），就能回復平衡。',
+ dse:'完整答案：能量平衡是指輸入能量和輸出能量保持相同。經常進食高熱量快餐令輸入能量增加；久坐不動令輸出能量減少。輸入長期高於輸出，過剩能量以脂肪積存，導致肥胖。'
+};
+document.querySelectorAll('.check').forEach(b=>b.onclick=()=>{
+  const id=b.dataset.check,[g,m]=grade(document.getElementById(id));scores[id]=[g,m];
+  const r=document.getElementById('r-'+id);r.className='result show';
+  r.innerHTML=`<b>${g} / ${m} 正確 ${g===m?'· 全對，營養神探！':''}</b><br>${MSG[id]}`;
+  const G=Object.values(scores).reduce((a,x)=>a+x[0],0),M=Object.values(scores).reduce((a,x)=>a+x[1],0);
+  document.getElementById('total').textContent=`總分：${G} / ${M}（已檢查 ${Object.keys(scores).length} / 4 個任務）`;
+});
+</script>
+</body>
+</html>
